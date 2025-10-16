@@ -62,13 +62,17 @@ The application will start on `http://localhost:8080`.
 
 ### User Profile
 
-- `GET /profile` - Get current user profile
-- `PUT /profile` - Update user profile
+- `GET /profiles/me` - Get current user profile
+- `PUT /profiles/me` - Update user profile
+- 'DELETE /profiles/me' - Delete user profile
 
 ### Admin (Admin role required)
 
 - `GET /admin/users` - Get all users with pagination
-- `PUT /admin/users/{id}/status` - Update user status
+- 'GET /admin/users/{id}' - Get user information based on id
+- 'PUT /admin/users/{id}' - Update data user
+- `PUT /admin/users/{id}/status` - Update user status (ACTIVE OR INACTIVE)
+- 'DELETE /admin/users/{id}'  - Remove user (with profile user)
 
 ## Database Schema
 
