@@ -19,8 +19,10 @@ A Spring Boot application for user management with JWT authentication and token 
 - Spring Security
 - Spring Data JPA
 - JWT (JSON Web Tokens)
-- H2 Database (configurable)
+- PostgreSQL Database
 - Maven
+- Docker & Docker Compose
+- Swagger/OpenAPI for API Documentation
 
 ## Getting Started
 
@@ -44,12 +46,121 @@ A Spring Boot application for user management with JWT authentication and token 
    mvn clean install
    ```
 
-3. Run the application:
+3. Configure application.yml
+
+   ```
+      spring:
+     datasource:
+       url: jdbc:postgresql://localhost:5432/user_management_db
+       username: postgres
+       password: yourpassword
+     jpa:
+       hibernate:
+         ddl-auto: update
+       properties:
+         hibernate:
+           format_sql: true
+           dialect: org.hibernate.dialect.PostgreSQLDialect
+       show-sql: true
+     profiles:
+       active: default
+
+   server:
+     port: 8080
+
+   jwt:
+     secret: mySuperSecureJwtSecretKeyThatIsAtLeast256BitsLong123456789
+
+   springdoc:
+     api-docs:
+       path: /api-docs
+     swagger-ui:
+       path: /swagger-ui.html
+       enabled: true
+
+   ---
+   spring:
+     config:
+       activate:
+         on-profile: docker
+     springdoc:
+       api-docs:
+         path: /api-docs
+       swagger-ui:
+         path: /swagger-ui.html
+         enabled: true
+     datasource:
+       url: jdbc:postgresql://db:5432/user_management
+       username: user
+       password: password
+     jpa:
+       hibernate:
+         ddl-auto: update
+       properties:
+         hibernate:
+           format_sql: true
+           dialect: org.hibernate.dialect.PostgreSQLDialect
+       show-sql: true
+
+   server:
+     port: 8080
+
+   jwt:
+     secret: mySuperSecureJwtSecretKeyThatIsAtLeast256BitsLong123456789
+
+   springdoc:
+     api-docs:
+       path: /api-docs
+     swagger-ui:
+       path: /swagger-ui.html
+
+   ```
+
+4. Create Database in PostgreSql
+
+```
+CREATE DATABASE user_management_db;
+```
+
+5. Run the application:
    ```bash
    mvn spring-boot:run
    ```
 
 The application will start on `http://localhost:8080`.
+
+#### Swagger API Documentation
+
+The application includes Swagger UI for interactive API documentation. Access it at:
+
+- `http://localhost:8080/swagger-ui.html`
+
+This provides a web interface to explore and test all available API endpoints, including authentication, user management, and admin functions.
+
+#### Docker Compose Setup
+
+For a complete containerized environment with PostgreSQL database:
+
+1. Ensure Docker and Docker Compose are installed.
+
+2. From the project root, run:
+
+   ```bash
+   docker-compose up --build
+   ```
+
+3. The application will be available at `http://localhost:8080` with Swagger at `http://localhost:8080/swagger-ui.html`.
+
+4. PostgreSQL database will be accessible at `localhost:5432` with credentials:
+
+   - Database: user_management_db
+   - Username: postgres
+   - Password: binterex
+
+5. To stop the services:
+   ```bash
+   docker-compose down
+   ```
 
 ## API Endpoints
 
@@ -62,13 +173,17 @@ The application will start on `http://localhost:8080`.
 
 ### User Profile
 
-- `GET /profile` - Get current user profile
-- `PUT /profile` - Update user profile
+- `GET /profiles/me` - Get current user profile
+- `PUT /profiles/me` - Update user profile
+- `DELETE /profiles/me` - Delete user profile
 
 ### Admin (Admin role required)
 
 - `GET /admin/users` - Get all users with pagination
-- `PUT /admin/users/{id}/status` - Update user status
+- `GET /admin/users/{id}` - Get user information based on id
+- `PUT /admin/users/{id}` - Update data user
+- `PUT /admin/users/{id}/status` - Update user status (ACTIVE OR INACTIVE)
+- `DELETE /admin/users/{id}` - Remove user (with profile user)
 
 ## Database Schema
 

@@ -3,6 +3,7 @@ package com.bionic.test.user_management.config;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +15,8 @@ import org.springframework.context.annotation.Configuration;
                 title = "User Management API",
                 version = "1.0",
                 description = "API for managing users and profiles"
-        )
+        ),
+        security = @SecurityRequirement(name = "bearerAuth")
 )
 @SecurityScheme(
         name = "bearerAuth",
@@ -28,4 +30,3 @@ public class SwaggerConfig {
         return new ModelMapper();
     }
 }
-     
