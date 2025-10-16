@@ -44,7 +44,80 @@ A Spring Boot application for user management with JWT authentication and token 
    mvn clean install
    ```
 
-3. Run the application:
+3. Configure application.yml
+   ```
+   spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/user_management_db
+    username: postgres
+    password: yourpassword
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+  profiles:
+    active: default
+
+server:
+  port: 8080
+
+jwt:
+  secret: mySuperSecureJwtSecretKeyThatIsAtLeast256BitsLong123456789
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  springdoc:
+    api-docs:
+      path: /api-docs
+    swagger-ui:
+      path: /swagger-ui.html
+      enabled: true
+  datasource:
+    url: jdbc:postgresql://db:5432/user_management
+    username: user
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+server:
+  port: 8080
+
+jwt:
+  secret: mySuperSecureJwtSecretKeyThatIsAtLeast256BitsLong123456789
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+   ```
+4. Create Database in PostgreSql
+```
+CREATE DATABASE user_management_db;
+```
+
+5. Run the application:
    ```bash
    mvn spring-boot:run
    ```
