@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/user_management_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=binterex
+      - JWT_SECRET=mySecretKey123456789012345678901234567890123456789012345678901234567890
+    depends_on:
+      - db
+    networks:
+      - user-management-network
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=user_management_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=binterex
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - user-management-network
+
+volumes:
+  postgres_data:
+
+networks:
+  user-management-network:
+    driver: bridge

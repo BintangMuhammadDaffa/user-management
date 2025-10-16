@@ -1,0 +1,145 @@
+# User Management Application
+
+A Spring Boot application for user management with JWT authentication and token revocation capabilities.
+
+## Features
+
+- User registration and login
+- JWT-based authentication
+- Role-based access control (Customer, Mitra, Admin)
+- Token storage in database for revocation
+- Scheduled cleanup of expired tokens
+- User profile management
+- Admin user management
+
+## Technologies Used
+
+- Java 17
+- Spring Boot 3.x
+- Spring Security
+- Spring Data JPA
+- JWT (JSON Web Tokens)
+- H2 Database (configurable)
+- Maven
+
+## Getting Started
+
+### Prerequisites
+
+- Java 17 or higher
+- Maven 3.6+
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone <repository-url>
+   cd user-management
+   ```
+
+2. Build the project:
+
+   ```bash
+   mvn clean install
+   ```
+
+3. Run the application:
+   ```bash
+   mvn spring-boot:run
+   ```
+
+The application will start on `http://localhost:8080`.
+
+## API Endpoints
+
+### Authentication
+
+- `POST /auth/register` - Register a new user
+- `POST /auth/login` - Login and receive JWT token
+- `POST /auth/logout` - Logout (revoke tokens)
+- `POST /auth/refresh` - Refresh JWT token
+
+### User Profile
+
+- `GET /profile` - Get current user profile
+- `PUT /profile` - Update user profile
+
+### Admin (Admin role required)
+
+- `GET /admin/users` - Get all users with pagination
+- `PUT /admin/users/{id}/status` - Update user status
+
+## Database Schema
+
+### Users Table
+
+- id (Primary Key)
+- email (Unique)
+- password (Encrypted)
+- role (CUSTOMER, MITRA, ADMIN)
+- status (ACTIVE, INACTIVE)
+
+### User Profiles Table
+
+- id (Primary Key)
+- user_id (Foreign Key)
+- full_name
+- address
+- phone
+
+### Tokens Table
+
+- id (Primary Key)
+- token (Unique)
+- user_id (Foreign Key)
+- revoked (Boolean)
+- expiry_date (DateTime)
+
+## Security
+
+- JWT tokens are stored in the database for revocation capability
+- Tokens are automatically revoked on logout or new login
+- Expired tokens are cleaned up periodically
+- Role-based access control implemented
+
+## Configuration
+
+Application properties can be configured in `src/main/resources/application.yml`:
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  secret: your-jwt-secret-key-here
+```
+
+## Testing
+
+Run the tests:
+
+```bash
+mvn test
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+This project is licensed under the MIT License.
